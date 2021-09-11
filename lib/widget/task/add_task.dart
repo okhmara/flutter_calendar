@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_calendar/controller/task_controller.dart';
+import 'package:flutter_calendar/model/task_model.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-final kDropdownMenuStyle = TextStyle(color: Colors.blueAccent);
+final kDropdownMenuStyle = TextStyle(
+  color: Colors.blueAccent,
+  fontSize: 20,
+  fontWeight: FontWeight.bold,
+);
+
 final kUnderLineStyle = Container(
-  height: 2,
+  height: 0,
   color: Colors.blueAccent,
 );
 
@@ -41,17 +49,7 @@ class _TaskAreaState extends State<TaskArea> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              const Text('duration'),
-              _selectHours(),
-              const Text('hour'),
-              _selectMinutes(),
-              const Text('min'),
-            ],
-          ),
-          SizedBox(height: 10),
+          SizedBox(height: 20),
           TextField(
             controller: _description,
             decoration: InputDecoration(
@@ -59,21 +57,54 @@ class _TaskAreaState extends State<TaskArea> {
               labelText: 'Description',
             ),
           ),
-          SizedBox(height: 10),
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              const Text('duration'),
+              const Icon(Icons.timer),
+              Row(
+                children: [
+                  _selectHours(),
+                  Text(':', style: kDropdownMenuStyle),
+                  _selectMinutes(),
+                ],
+              ),
+            ],
+          ),
+          SizedBox(height: 20),
           Align(
             alignment: Alignment.centerRight,
-            child: OutlinedButton.icon(
+            child: ElevatedButton.icon(
               icon: Icon(Icons.save_alt),
               label: Text('Add task'),
-              onPressed: () {
-                print(
-                    'new task: $hoursValue:$minutesValue ${_description.text}');
-              },
+              onPressed: () => _addTask(),
             ),
           ),
         ],
       ),
     );
+  }
+
+  void _addTask() {
+    print('new task: $hoursValue:$minutesValue ${_description.text}');
+    if (hoursValue == 0 && minutesValue == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            backgroundColor: Colors.redAccent,
+            content: Text('Duration must be set.')),
+      );
+      return;
+    }
+    Get.find<TaskController>().addTask(Task(
+      description: _description.text,
+      date: widget.day,
+      duration: Duration(
+        hours: hoursValue,
+        minutes: minutesValue,
+      ),
+    ));
+    Navigator.of(context).pop();
   }
 
   _selectHours() {
@@ -92,9 +123,17 @@ class _TaskAreaState extends State<TaskArea> {
       items: hours.map((int value) {
         return DropdownMenuItem<int>(
           value: value,
-          child: Text('$value'),
+          child: Center(child: Text('$value')),
         );
       }).toList(),
+      selectedItemBuilder: (BuildContext context) {
+        return hours.map<Widget>((int value) {
+          return Container(
+              alignment: Alignment.centerRight,
+              width: 30,
+              child: Text('$value', textAlign: TextAlign.end));
+        }).toList();
+      },
     );
   }
 
@@ -114,14 +153,25 @@ class _TaskAreaState extends State<TaskArea> {
       items: minutes.map((int value) {
         return DropdownMenuItem<int>(
           value: value,
-          child: Text('$value'),
+          child: Center(child: Text('$value')),
         );
       }).toList(),
+      selectedItemBuilder: (BuildContext context) {
+        return minutes.map<Widget>((int value) {
+          return Container(
+              alignment: Alignment.centerRight,
+              width: 30,
+              child: Text(
+                '$value',
+                // textAlign: TextAlign.end,
+              ));
+        }).toList();
+      },
     );
   }
 }
 
-Future<void> addTask(BuildContext context, DateTime day) async {
+Future<void> addTaskDialog(BuildContext context, DateTime day) async {
   return showDialog<void>(
     context: context,
     // barrierDismissible: false, // user must tap button!

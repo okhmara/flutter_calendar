@@ -3,12 +3,12 @@ import 'package:flutter_calendar/utils/format_functions.dart';
 class TaskFields {
   static final List<String> values = [
     /// Add all fields
-    id, description, time, duration
+    id, description, date, duration
   ];
 
   static final String id = '_id';
   static final String description = 'description';
-  static final String time = 'time';
+  static final String date = 'date';
   static final String duration = 'duration';
 }
 
@@ -40,14 +40,14 @@ class Task {
   static Task fromJson(Map<String, Object?> json) => Task(
         id: json[TaskFields.id] as int?,
         description: json[TaskFields.description] as String,
-        date: DateTime.parse(json[TaskFields.time] as String),
+        date: DateTime.parse(json[TaskFields.date] as String),
         duration: parseDuration(json[TaskFields.duration] as String),
       );
 
   Map<String, Object?> toJson() => {
         TaskFields.id: id,
         TaskFields.description: description,
-        TaskFields.time: date.toIso8601String(),
+        TaskFields.date: date.toString().substring(0, 10),
         TaskFields.duration: durationToString(duration),
       };
 }
