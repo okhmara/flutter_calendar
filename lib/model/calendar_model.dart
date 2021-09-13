@@ -1,19 +1,8 @@
 import 'package:flutter/material.dart';
 
-final visibleWeeks = 6;
-
-final List weekDays = [
-  'monday',
-  'tuesday',
-  'wednesday',
-  'thursday',
-  'friday',
-  'saturday',
-  'sunday'
-];
-
 class Calendar {
-  // final DateTime month;
+  static final stratWeekDay = DateTime.monday;
+  static final visibleWeeks = 6;
 
   Calendar();
 
@@ -21,7 +10,7 @@ class Calendar {
     final firstDay = DateTime.utc(selectedDay.year, selectedDay.month, 1);
     final lastDay = lastDayOfMonth(selectedDay);
 
-    final daysBefore = (firstDay.weekday + 7) % 7 - 1;
+    final daysBefore = (firstDay.weekday + 7 - stratWeekDay) % 7;
     final firstToDisplay = firstDay.subtract(Duration(days: daysBefore));
 
     final dayBetween = daysBetween(firstToDisplay, lastDay) + 1;
@@ -52,7 +41,7 @@ class Calendar {
     );
   }
 
-  static List<DateTime> getDaysInPage(DateTime day) {
+  static List<DateTime> getDays(DateTime day) {
     final range = getDaysRange(day);
     return daysInRange(range.start, range.end);
   }

@@ -17,16 +17,14 @@ class CalendarCell extends StatelessWidget {
 
     final dayCaption = cell.date.day.toString();
     final dayStyle = _dayStyle(cell.date);
+
     return InkWell(
       onTap: () {
-        print("Tapped a Container ${cell.date}");
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => TaskPage(day: cell.date)));
       },
       child: Container(
         height: h,
-        // padding: EdgeInsets.all(10),
-        // margin: EdgeInsets.all(10),
         child: Stack(
           children: [
             Center(

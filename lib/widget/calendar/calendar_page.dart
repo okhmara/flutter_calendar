@@ -47,18 +47,6 @@ class CalendarPage extends StatelessWidget {
                       ..._buildCalendarDays(),
                     ],
                   ),
-                  InkWell(
-                    // When the user taps the button, show a snackbar.
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text('Tap'),
-                      ));
-                    },
-                    child: const Padding(
-                      padding: EdgeInsets.all(12.0),
-                      child: Text('Flat Button'),
-                    ),
-                  ),
                 ],
               );
             }),
@@ -69,7 +57,7 @@ class CalendarPage extends StatelessWidget {
   }
 
   List<TableRow> _buildCalendarDays() {
-    return List.generate(visibleWeeks, (index) => index)
+    return List.generate(Calendar.visibleWeeks, (index) => index)
         .map(
           (index) => TableRow(
             // decoration: BoxDecoration(color: Colors.yellow),
@@ -94,7 +82,7 @@ class CalendarPage extends StatelessWidget {
         return Center(
           heightFactor: 2,
           child: Text(
-            '${DateFormat("EEE").format(_controller.days[index].date)}',
+            DateFormat("EEE").format(_controller.days[index].date).toString(),
           ),
         );
       }).toList(),

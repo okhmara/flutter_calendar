@@ -10,6 +10,7 @@ class CalendarHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final CalendarController _monthController = Get.find();
+    final day = _monthController.selected.value;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -19,7 +20,7 @@ class CalendarHeader extends StatelessWidget {
         ),
         Row(children: [
           Text(
-            '${DateFormat("MMMM").format(_monthController.selected.value)}',
+            DateFormat("MMMM").format(day).toString(),
             style: TextStyle(
               color: Colors.blueAccent,
               fontSize: 24,
@@ -28,7 +29,7 @@ class CalendarHeader extends StatelessWidget {
           ),
           SizedBox(width: 20),
           Text(
-            '${DateFormat("yyyy").format(_monthController.selected.value)}',
+            DateFormat("yyyy").format(day).toString(),
             style: TextStyle(
               color: Colors.blueAccent,
               fontSize: 24,

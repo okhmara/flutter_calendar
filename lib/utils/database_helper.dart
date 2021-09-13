@@ -48,7 +48,6 @@ class TasksDatabase {
   }
 
   Future<Task> readTask(int id) async {
-    // await TasksDatabase.instance.readTask(task);
     final db = await instance.database;
 
     final maps = await db.query(
@@ -106,15 +105,7 @@ class TasksDatabase {
       where: '${TaskFields.date} BETWEEN ? AND ?',
       whereArgs: [from, to],
       groupBy: '${TaskFields.date}',
-      // orderBy: orderBy,
     );
-    // var res = await db.rawQuery('''
-    //   SELECT ${TaskAmountFields.date}, count(*) as ${TaskAmountFields.amount}
-    //   FROM $qryTasks
-    //   WHERE date = ?
-    //   GROUP BY date
-    //   ORDER BY date;
-    //   ''', [day]);
     List<DayTasks> list = res.isNotEmpty
         ? res.map((c) => DayTasks.fromMap(c)).toList().toList()
         : <DayTasks>[];
@@ -122,6 +113,8 @@ class TasksDatabase {
   }
 
 // http://sqlfiddle.com/#!5/ecc60/2
+// to slow !!!
+// this is just an example of getting calendar days using SQL
   Future<List<DayTasks>> getTaskCountWithDays(
       DateTime start, DateTime end) async {
     final db = await instance.database;

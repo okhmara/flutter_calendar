@@ -26,7 +26,7 @@ class TaskArea extends StatefulWidget {
 }
 
 class _TaskAreaState extends State<TaskArea> {
-  final _description = TextEditingController(text: 'new task');
+  final _description = TextEditingController();
 
   final hours = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 24];
 
@@ -42,7 +42,7 @@ class _TaskAreaState extends State<TaskArea> {
       child: Column(
         children: <Widget>[
           Text(
-            '${DateFormat("EEE, d MMM ''yy").format(widget.day)}',
+            DateFormat("EEE, d MMM ''yy").format(widget.day).toString(),
             style: TextStyle(
               color: Colors.blueAccent,
               fontSize: 24,
@@ -87,8 +87,7 @@ class _TaskAreaState extends State<TaskArea> {
   }
 
   void _addTask() {
-    print('new task: $hoursValue:$minutesValue ${_description.text}');
-    if (hoursValue == 0 && minutesValue == 0) {
+    if ((hoursValue == 0 && minutesValue == 0) || (_description.text.isEmpty)) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             backgroundColor: Colors.redAccent,
@@ -163,7 +162,6 @@ class _TaskAreaState extends State<TaskArea> {
               width: 30,
               child: Text(
                 '$value',
-                // textAlign: TextAlign.end,
               ));
         }).toList();
       },

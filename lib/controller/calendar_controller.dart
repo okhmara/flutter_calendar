@@ -10,7 +10,6 @@ class CalendarController extends GetxController {
   var state = CalendarState.loading.obs;
   var selected = DateTime.now().obs;
   var days = <DayTasks>[].obs;
-  // var tasks = <DayWithTask>[].obs;
   var predDay = DateTime(0);
 
   final TasksDatabase db;
@@ -31,6 +30,7 @@ class CalendarController extends GetxController {
     }
     state.value = CalendarState.loading;
     final range = Calendar.getDaysRange(day);
+
     try {
       final List<DayTasks> list = await db.getTasksAmount(
         range.start,
@@ -56,9 +56,6 @@ class CalendarController extends GetxController {
     if (selected.value == predDay) {
       return;
     }
-    // state.value = MonthState.loading;
-    // final month = PageOfMonth();
-    // final range = month.getDaysRange(day);
     try {
       days.clear();
       final List<DayTasks> list = getDaysInPage(selected.value);
@@ -95,18 +92,13 @@ class CalendarController extends GetxController {
     return List.generate(
       dayCount,
       (index) => DayTasks(
-        date: DateTime.utc(
+        date: DateTime(
           range.start.year,
           range.start.month,
           range.start.day + index,
         ),
         amountTasks: 0,
       ),
-      // DateTime.utc(
-      //   range.start.year,
-      //   range.start.month,
-      //   range.start.day + index,
-      // ),
     );
   }
 }

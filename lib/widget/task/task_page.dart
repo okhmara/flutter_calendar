@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_calendar/controller/calendar_controller.dart';
 import 'package:flutter_calendar/controller/task_controller.dart';
 import 'package:flutter_calendar/model/task_model.dart';
 import 'package:flutter_calendar/utils/database_helper.dart';
@@ -13,16 +14,23 @@ class TaskPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('build task page');
     final _controller = Get.put(TaskController(TasksDatabase.instance));
     _controller.loadTasks(day);
     return Obx(() {
       return Scaffold(
         appBar: AppBar(
+          leading: BackButton(
+            onPressed: () {
+              if (_controller.modified.isTrue) {
+                Get.find<CalendarController>().refresh();
+              }
+              Navigator.pop(context);
+            },
+          ),
           title: RichText(
             textAlign: TextAlign.center,
             text: TextSpan(
-                text: "${DateFormat("EEEE, d MMM ''yy").format(day)}",
+                text: DateFormat("EEEE, d MMM ''yy").format(day).toString(),
                 style: TextStyle(fontSize: 20),
                 children: <TextSpan>[
                   TextSpan(
@@ -49,12 +57,11 @@ class TaskPage extends StatelessWidget {
                 key: ObjectKey(task),
                 direction: DismissDirection.startToEnd,
                 onDismissed: (direction) =>
-                    dismissTask(context, direction, task.description),
+                    dismissTask(context, direction, task),
                 confirmDismiss: (_) async =>
                     showConfirmDialog(context, task.description),
                 background: buildSwipeActionLeft(),
               );
-              // Text('$index');
             },
           ),
         ),
@@ -71,11 +78,11 @@ class TaskPage extends StatelessWidget {
   Future<bool?> dismissTask(
     BuildContext context,
     DismissDirection direction,
-    String description,
+    Task task,
   ) async {
-    // await confirmDialog(description);
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text('task $description dismissed')));
+    Get.find<TaskController>().deleteTask(task);
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('task ${task.description} dismissed')));
   }
 
   Widget buildSwipeActionLeft() {
